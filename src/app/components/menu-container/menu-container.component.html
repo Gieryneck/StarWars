@@ -1,8 +1,10 @@
-<ul>
-    <app-menu-element 
-        *ngFor="let char of swService.data"
-        [character]="char"
-        (chooseItem)="showProfile(char)"
-    >   
-    </app-menu-element>
-</ul>
+<div class="menu">
+    <ul>
+        <app-menu-element 
+            *ngFor="let char of swService.data"
+            [character]="char"
+        >   
+        </app-menu-element>
+    </ul>
+</div>
+

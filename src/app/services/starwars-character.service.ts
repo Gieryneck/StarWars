@@ -1,66 +1,53 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Character } from '../interfaces/Character';
 import { Data } from '../interfaces/Data';
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class StarwarsCharacterService {
 
-  constructor(
-    private http: HttpClient
-  ) { }
+    profileSubject = new Subject<Character>();
+    // profileObs$ = this.profileObs;
 
-  private apiUrlJson: string = "../../assets/response.json";
-  //private apiUrl: Object = JSON.parse(this.apiUrlJson).results;
+    searchTerms = new Subject<string>();
+    
+    constructor(
+        private http: HttpClient
+    ) { }
 
-  public data: Character[];
+    private apiUrlJson: string = "../../assets/response.json";
+    //private apiUrl: Object = JSON.parse(this.apiUrlJson).results;
 
-  public selectedProfile: Character = {
-    name: 'Luke Skywalker',
-    height: '172',
-    mass: '77',
-    hair_color: 'blond',
-    skin_color: 'fair',
-    birth_year: '19BBY',
-    gender: 'male',
-    species: [
-      'https://swapi.co/api/species/1/'
-    ],
-    vehicles: [
-      'https://swapi.co/api/vehicles/14/',
-      'https://swapi.co/api/vehicles/30/'
-    ],
-    starships: [
-      'https://swapi.co/api/starships/12/',
-      'https://swapi.co/api/starships/22/'
-    ],
-    number_of_vehicles: 2,
-  }; 
+    data: Character[];
+    filteredData: Character[];
 
-  getData(): Observable<Object> {
-      return this.http.get<Object>(this.apiUrlJson);
-  }
+    getData(): Observable<Object> {
+        return this.http.get<Object>(this.apiUrlJson);
+    }
 
-  storeData() {
-      this.getData()
-        .subscribe((response: Data) => {
-            this.data = response.results;
-            console.log(this.data);
-        });
-  }
+    storeData() {
+        this.getData()
+            .subscribe((response: Data) => {
+                this.data = response.results;
+                console.log(this.data);
+            });
+    }
 
-  selectProfile(char: Character) {
-    this.selectedProfile = char;
-    console.log("selectProfile here", this.selectedProfile);
-    this.sendProfile();
-  }
+    //public selectedProfile: Character;
 
-  sendProfile(): Observable<Character> {
-    console.log("sendProfile here", this.selectedProfile);
-    return of(this.selectedProfile);
-  }
+    selectProfile(char: Character) {
+        /* this.selectedProfile = char;
+        console.log("selectProfile here", this.selectedProfile); */
+        this.profileSubject.next(char);
+    }
+
+    filterItems(term: string) {
+        this.filteredData = this.data.filter((char: Character) => char.name.toLowerCase().indexOf(term) !== -1);
+        console.log(this.filteredData);
+        //this.searchTerms.next(term);
+    }
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import { Character } from "../../interfaces/Character";
+import { StarwarsCharacterService } from "../../services/starwars-character.service";
+
 @Component({
     selector: 'app-menu-element',
     templateUrl: './menu-element.component.html',
@@ -7,17 +9,15 @@ import { Character } from "../../interfaces/Character";
 })
 export class MenuElementComponent implements OnInit {
 
-    constructor() { }
+    constructor(
+        private swService: StarwarsCharacterService
+    ) { }
 
     @Input() character: Character;
 
-
-    @Output() chooseItem: EventEmitter<Character> =
-        new EventEmitter<Character>();
-
     clickHandler(char: Character) {
-        this.chooseItem.emit(char);
-    }
+        this.swService.selectProfile(char)
+    } 
 
     ngOnInit() {
     }

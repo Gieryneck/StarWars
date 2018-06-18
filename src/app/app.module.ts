@@ -5,13 +5,15 @@ import { MenuContainerComponent } from './components/menu-container/menu-contain
 import { MenuElementComponent } from './components/menu-element/menu-element.component';
 import { HttpClientModule } from "@angular/common/http";
 import { ProfileViewComponent } from './components/profile-view/profile-view.component';
+import { FilterComponent } from './components/filter/filter.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuContainerComponent,
     MenuElementComponent,
-    ProfileViewComponent
+    ProfileViewComponent,
+    FilterComponent
   ],
   imports: [
     BrowserModule,

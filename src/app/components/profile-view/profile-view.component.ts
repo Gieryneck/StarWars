@@ -3,30 +3,24 @@ import { StarwarsCharacterService } from "../../services/starwars-character.serv
 import { Character } from "../../interfaces/Character";
 
 @Component({
-  selector: 'app-profile-view',
-  templateUrl: './profile-view.component.html',
-  styleUrls: ['./profile-view.component.css']
+    selector: 'app-profile-view',
+    templateUrl: './profile-view.component.html',
+    styleUrls: ['./profile-view.component.css']
 })
 export class ProfileViewComponent implements OnInit {
 
-  constructor(
-    private swService: StarwarsCharacterService
-  ) {}
+    constructor (
+        private swService: StarwarsCharacterService
+    ) { }
 
-  profile: Character | null | undefined/*  = this.swService.selectedProfile */;
+    profile: Character | null | undefined;
 
-   getProfile(): void {
-      this.swService.sendProfile()
-        .subscribe(profile => {
-            this.profile = profile;
-            console.log(this.profile);
-        });
-  } 
+    ngOnInit(): void {
+        this.swService.profileSubject
+            .subscribe(item => this.profile = item);
+    }
 
-  ngOnInit() {
-      this.getProfile();
-  }
+    ngOnChanges() {
 
-  ngOnChanges() {
-  }
+    }
 }

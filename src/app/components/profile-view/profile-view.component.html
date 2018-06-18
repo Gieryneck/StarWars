@@ -1,7 +1,17 @@
-<div *ngIf="profile">
+<div class="profile" *ngIf="profile">
     <h2>{{profile.name}}</h2>
-    <p>{{profile.species}}</p>
-    <ul>
-
+    <h3>{{profile.species}}</h3>
+    <ul class="list">
+        <li>{{profile.birth_year}}</li>
+        <li>{{profile.height}}</li>
+        <li>{{profile.mass}}</li>
+        <li>{{profile.hair_color}}</li>
+        <li>{{profile.skin_color}}</li>
+        <li>{{profile.gender}}</li>
+        <li>{{profile.number_of_vehicles}}</li>
     </ul>
+    <div *ngIf="profile.starships.length">
+        <h3>Starships:</h3>
+        <p *ngFor="let ship of profile.starships">{{ship}}</p>
+    </div>
 </div>
