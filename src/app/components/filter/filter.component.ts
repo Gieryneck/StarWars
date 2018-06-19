@@ -14,15 +14,11 @@ export class FilterComponent implements OnInit {
        private swService: StarwarsCharacterService
     ) { }
 
-    // searchTerms = new Subject<string>();
-    // characters$: Observable<Character[]>;
-
     ngOnInit() {
     }
 
     filterItems(term: string) {
-        //term.trim();
-        //if (term.length === 0) return; this cant be cause how else we return original data?
+        term = term.trim();
         this.swService.filterItems(term);
     }
 }

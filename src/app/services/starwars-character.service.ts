@@ -3,8 +3,9 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, of, Subject } from 'rxjs';
 import { Character } from '../interfaces/Character';
 import { Data } from '../interfaces/Data';
-
-
+import { mergeMap } from 'rxjs/operators';
+import { range } from 'rxjs';
+import { map, filter, scan } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root'
 })
@@ -12,42 +13,47 @@ export class StarwarsCharacterService {
 
     profileSubject = new Subject<Character>();
     // profileObs$ = this.profileObs;
-
-    searchTerms = new Subject<string>();
     
     constructor(
         private http: HttpClient
     ) { }
 
-    private apiUrlJson: string = "../../assets/response.json";
+    apiUrl: string = "https://swapi.co/api/people/";
     //private apiUrl: Object = JSON.parse(this.apiUrlJson).results;
 
-    data: Character[];
+    //speciesData: Species[] = [];
+    data: Character[] = [];
     filteredData: Character[];
+    filteredDataSubject = new Subject<Character[]>();
 
-    getData(): Observable<Object> {
-        return this.http.get<Object>(this.apiUrlJson);
+    getData(url: string): Observable<Object> {
+        return this.http.get<Object>(url);
+    } 
+
+    getSpecies(url: string) {
+        return this.http.get<Object>(url);
     }
 
-    storeData() {
-        this.getData()
+    storeData(url: string) {
+        this.getData(url)
             .subscribe((response: Data) => {
-                this.data = response.results;
-                console.log(this.data);
+                if (response.next) {
+                    let next = response.next;
+                    this.storeData(next);
+                }
+                this.data.push.apply(this.data, response.results);
+                this.filterItems("");
+                //console.log(this.data);
             });
     }
 
-    //public selectedProfile: Character;
-
     selectProfile(char: Character) {
-        /* this.selectedProfile = char;
-        console.log("selectProfile here", this.selectedProfile); */
         this.profileSubject.next(char);
     }
 
     filterItems(term: string) {
         this.filteredData = this.data.filter((char: Character) => char.name.toLowerCase().indexOf(term) !== -1);
-        console.log(this.filteredData);
-        //this.searchTerms.next(term);
+        // console.log(this.filteredData);
+        this.filteredDataSubject.next(this.filteredData);
     }
 }
