@@ -10,4 +10,5 @@ export interface Character {
     vehicles: Array<string>;
     number_of_vehicles: number;
     starships: Array<string>;
+    url: string;
 }

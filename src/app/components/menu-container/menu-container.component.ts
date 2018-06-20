@@ -14,13 +14,16 @@ export class MenuContainerComponent implements OnInit {
     constructor(
         private swService: StarwarsCharacterService
     ) { }
-
+    characters$
     data: Character[];
-
+ 
     ngOnInit() {
-        this.swService.storeData(this.swService.apiUrl);
-        this.swService.filteredDataSubject
-            .subscribe(filtredData => this.data = filtredData);
+        //this.swService.storeData(this.swService.apiUrl);
+        /* this.swService.filteredDataSubject
+            .subscribe(filteredData => this.data = filteredData); */
+        this.characters$ = this.swService.getList();
+        this.characters$
+            .subscribe(results => this.data = results)
     }
 
 
