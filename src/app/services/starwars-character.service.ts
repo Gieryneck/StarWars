@@ -56,14 +56,24 @@ export class StarwarsCharacterService {
         return this.http.get<any>('https://swapi.co/api/people/')
             .pipe(
                 // tap(this.setNavigation.bind(this)),
-                map(response => response.results),
-                concatMap(
+                
+                // PRAWIE KAŻDY OPERATOR DOSTAJE OBSERVABLE I ZWRACA OBSERVABLE
+                map(response => response.results), // dostajemy Observable<Characters[]>   
+                concatMap( // tu mapujemy tylko 1 item, tę tablicę characters
                     characters => forkJoin(
-                        ...this.getSpecies(characters)
-                            .map(species => {
-                                return this.getSpeciesUrl(species)
+                        /* ... */this.getAllSpeciesUrls(characters) // uniquespeciesurl[]
+                            .map(uniqueSpeciesUrl => {
+                                //console.log(uniquespeciesurl);
+                                return this.getSpeciesObject(uniqueSpeciesUrl) // zwroci observable<species> dla kazdego urla, forkJoin czeka az 
+                                                                   // wszystkie responsy wróca   
+                                /* 
+                                    The forkJoin() operator allows us to take a list of Observables and execute them in parallel. 
+                                    Once every Observable in the list emits a value, the forkJoin will emit a single Observable value 
+                                    containing a list of all the resolved values from the Observables in the list. */                      
                             })
                     ),
+                    // ta fcja bedaca parametrem concatMap to results selector dla outer observable(result to Observable<Characters[]>)
+                    // i inner observable (result to species, a dokladniej SpeciesObj[])
                     (characters, species) => {
                         return this.addSpecies(characters, species)
                     }
@@ -74,29 +84,32 @@ export class StarwarsCharacterService {
     // dodaje gatunek
   addSpecies(characters, species) {
     return characters.map((character) => {
-      const speciesList =
-        character['species']
+      const speciesName =
+        character['species'] // dostajemy sie do klucza species kazdego obiektu character, ten klucz zawiera tablice z urlem do obiektu species 
           .map(spec =>
-            species.find(spec1 => spec1['url'] === spec)['name']
+            species.find(speciesObj => speciesObj['url'] === spec)['name']
           );
       return Object.assign(
         character,
-        { species: speciesList }
+        { species: speciesName }
       );
     });
   }
 
   // pobiera gatunek z API
-  getSpeciesUrl(speciesUrl: string): Observable<string> {
-    return this.http.get<string>(speciesUrl);
+  getSpeciesObject(speciesUrl: string): Observable<Object> {
+    return this.http.get<Object>(speciesUrl);
   }
 
 
-  getSpecies(characters): string[] {
+  getAllSpeciesUrls(characters): string[] {
+    // chain pozwala na przepuszczenie danych przez kolejne operatory lodasha, 
+   // tworzy lodashowy wrapper ktory musi byc na koncu zdjety przez value
     return chain(characters)
-   .map(character => character.species)
-   .flattenDeep()
-   .uniq()
-   .value();
+   .map(character => character.species) // dla kazdego character w tablicy zwroc tylko arraya z url do species (api zwraca arraya z urlem w srodku)
+   .flattenDeep() // pozbadz sie wewnetrznych arrayow, zwraca [url, url, url, url] 
+   .uniq() // Creates a duplicate-free version of an array, link do kazdego species bedzie sie pojawial tylko raz
+   .value();  
+   
 }
 }
