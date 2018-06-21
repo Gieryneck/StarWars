@@ -16,11 +16,12 @@ export class ProfileViewComponent implements OnInit {
     profile: Character | null | undefined;
 
     ngOnInit(): void {
-        this.swService.profileSubject
-            .subscribe(item => this.profile = item);
+        /* this.swService.profileObs$
+            .subscribe(character => {
+                this.profile = character;
+            }); */
     }
 
     ngOnChanges() {
-
     }
 }

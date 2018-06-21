@@ -15,9 +15,8 @@ export class FilterComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+
     }
 
-    findCharacters(term: string) {
-        //this.swService.storeData(this.swService.apiUrl + `?search=${term}`)
-    }
+    
 }

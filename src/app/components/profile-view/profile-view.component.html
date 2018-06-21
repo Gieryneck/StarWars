@@ -12,6 +12,9 @@
     </ul>
     <div *ngIf="profile.starships.length">
         <h3>Starships:</h3>
-        <p *ngFor="let ship of profile.starships">{{ship}}</p>
+        <div *ngFor="let ship of profile.starships">
+            <p>{{ship.name}}</p>
+            <p>Model: {{ship.model}}</p>
+        </div>
     </div>
 </div>

@@ -1,5 +1,4 @@
 <div>
     <h1>Star Wars Characters</h1>
-    <input #searchbox/>
-    <button (click)="findCharacters(searchbox.value)">Filter characters</button>
+    <input #searchBox (keyup)="search(searchBox.value)"/>
 </div>
