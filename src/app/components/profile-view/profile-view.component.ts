@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { StarwarsCharacterService } from "../../services/starwars-character.service";
 import { Character } from "../../interfaces/Character";
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-profile-view',
@@ -13,13 +14,10 @@ export class ProfileViewComponent implements OnInit {
         private swService: StarwarsCharacterService
     ) { }
 
-    profile: Character | null | undefined;
+    profile$:  Observable<Character>;
 
     ngOnInit(): void {
-        /* this.swService.profileObs$
-            .subscribe(character => {
-                this.profile = character;
-            }); */
+        this.profile$ = this.swService.profileSubject$
     }
 
     ngOnChanges() {

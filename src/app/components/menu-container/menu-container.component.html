@@ -1,10 +1,15 @@
+<app-filter (keywordEntered)="search($event)"></app-filter>
 <div class="menu">
     <ul>
         <app-menu-element 
-            *ngFor="let char of data"
+            *ngFor="let char of characters$ | async"
             [character]="char"
         >   
         </app-menu-element>
     </ul>
+    <div> 
+        <button *ngIf="swService.apiCharUrlPrevious" (click)="getPreviousPage()" type="button" class="btn btn-primary">Previous</button>
+        <button *ngIf="swService.apiCharUrlNext" (click)="getNextPage()">Next</button>
+    </div>
 </div>
 

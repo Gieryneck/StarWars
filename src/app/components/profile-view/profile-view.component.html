@@ -1,6 +1,8 @@
-<div class="profile" *ngIf="profile">
+<div class="profile" *ngIf="(profile$ | async) as profile">
     <h2>{{profile.name}}</h2>
-    <h3>{{profile.species}}</h3>
+    <div>
+        <p *ngFor="let species of profile.species">{{species.name}}</p>
+    </div>
     <ul class="list">
         <li>{{profile.birth_year}}</li>
         <li>{{profile.height}}</li>

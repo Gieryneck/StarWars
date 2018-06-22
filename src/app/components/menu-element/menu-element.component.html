@@ -1,5 +1,5 @@
 <li (click)="clickHandler(character)" class="list-item">
     <h3>{{character.name}}</h3>
     <p>Born: {{character.birth_year}}</p>
-    <p>Species: {{character.species}}</p>
+    <p>Species: <span *ngFor="let species of character.species">{{species.name}}</span></p>
 </li>
