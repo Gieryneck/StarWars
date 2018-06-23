@@ -10,21 +10,25 @@ import { Observable } from "rxjs";
 })
 
 export class MenuContainerComponent implements OnInit {
+    characters$: Observable<Character[]>
 
     constructor(
         private swService: StarwarsCharacterService
     ) { }
-    characters$: Observable<Character[]>
-    data: Character[];
- 
+
     ngOnInit() {
-        //this.swService.storeData(this.swService.apiUrl);
-        /* this.swService.filteredDataSubject
-            .subscribe(filteredData => this.data = filteredData); */
-        this.characters$ = this.swService.getList(this.swService.apiCharUrl);
-        this.characters$
-            .subscribe(results => this.data = results)
+        this.characters$ = this.swService.getList();
     }
 
+    search(keyword: string) {
+        this.characters$ = this.swService.getList(keyword);
+    }
 
+    getNextPage() {
+        this.search(this.swService.apiCharUrlNext);
+    }
+
+    getPreviousPage() {
+        this.search(this.swService.apiCharUrlPrevious);
+    }
 }
