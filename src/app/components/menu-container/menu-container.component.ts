@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { StarwarsCharacterService } from "../../services/starwars-character.service";
+import { StarwarsCharacterService } from '../../services/starwars-character.service';
 import { Character } from '../../interfaces/Character';
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-menu-container',
@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 })
 
 export class MenuContainerComponent implements OnInit {
-    characters$: Observable<Character[]>
+    characters$: Observable<Character[]>;
 
     constructor(
         private swService: StarwarsCharacterService
@@ -21,14 +21,15 @@ export class MenuContainerComponent implements OnInit {
     }
 
     search(keyword: string) {
-        this.characters$ = this.swService.getList(keyword);
+        this.swService.setKeyword(keyword);
+        this.characters$ = this.swService.getList();
     }
 
     getNextPage() {
-        this.search(this.swService.apiCharUrlNext);
+        this.characters$ = this.swService.getNextPage();
     }
 
     getPreviousPage() {
-        this.search(this.swService.apiCharUrlPrevious);
+        this.characters$ = this.swService.getPreviousPage();
     }
 }

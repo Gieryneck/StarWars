@@ -1,7 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject } from "rxjs";
-import { Character } from "../../interfaces/Character";
-import { StarwarsCharacterService } from "../../services/starwars-character.service";
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -11,23 +9,18 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class FilterComponent implements OnInit {
     @Output() keywordEntered: EventEmitter<string> = new EventEmitter<string>();
-
-
     keywordSubject = new Subject<string>();
-    
+
     constructor() { }
 
     ngOnInit() {
         this.keywordSubject.pipe(
             debounceTime(500),
             distinctUntilChanged()
-        ).subscribe(keyword => this.keywordEntered.emit(keyword))
+        ).subscribe(keyword => this.keywordEntered.emit(keyword));
     }
-
 
     search(term) {
-        this.keywordSubject.next(term)
+        this.keywordSubject.next(term);
     }
-
-    
 }

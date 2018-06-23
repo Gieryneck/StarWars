@@ -8,8 +8,8 @@
         </app-menu-element>
     </ul>
     <div> 
-        <button *ngIf="swService.apiCharUrlPrevious" (click)="getPreviousPage()" type="button" class="btn btn-primary">Previous</button>
-        <button *ngIf="swService.apiCharUrlNext" (click)="getNextPage()">Next</button>
+        <button *ngIf="swService.isPreviousPage()" (click)="getPreviousPage()" type="button" class="btn btn-primary">Previous</button>
+        <button *ngIf="swService.isNextPage()" (click)="getNextPage()">Next</button>
     </div>
 </div>
 

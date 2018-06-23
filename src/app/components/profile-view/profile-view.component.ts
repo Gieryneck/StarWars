@@ -1,6 +1,6 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
-import { StarwarsCharacterService } from "../../services/starwars-character.service";
-import { Character } from "../../interfaces/Character";
+import { Component, OnInit } from '@angular/core';
+import { StarwarsCharacterService } from '../../services/starwars-character.service';
+import { Character } from '../../interfaces/Character';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -17,9 +17,6 @@ export class ProfileViewComponent implements OnInit {
     profile$:  Observable<Character>;
 
     ngOnInit(): void {
-        this.profile$ = this.swService.profileSubject$
-    }
-
-    ngOnChanges() {
+        this.profile$ = this.swService.profileSubject$;
     }
 }
