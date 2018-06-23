@@ -76,7 +76,6 @@ export class StarwarsCharacterService {
 
     //glowna funkcja pobierajaca liste
     public getList(url): Observable<any> {
-        console.log(url);
         return this.http.get<any>(url)
             .pipe(
                 // tap(this.setNavigation.bind(this)),
@@ -95,15 +94,16 @@ export class StarwarsCharacterService {
                                     Once every Observable in the list emits a value, the forkJoin will emit a single Observable value 
                                     containing a list of all the resolved values from the Observables in the list. */
                             }),
-                            this.getAllStarshipsUrls(characters) 
+                            this.getAllStarshipsUrls(characters) // StarshipsUrls[]
                             .map(starshipUrl => {
                                 return this.getSpeciesObject(starshipUrl)
-                            }) 
+                            })
                     ]),
                     
-                    // ta fcja bedaca parametrem concatMap to results selector dla outer observable(result to Observable<Characters[]>)
-                    // i inner observable (result to SpeciesObj[])
+                    // ta fcja bedaca parametrem concatMap to results selector dla outer observable(emitujace Characters[])
+                    // i inner observable (emitujace SpeciesObj[])
                     (characters, species) => {
+                        console.log(characters)
                         return this.addSpecies(characters, species)
                     }
                 )
@@ -116,19 +116,20 @@ export class StarwarsCharacterService {
             const speciesName =
                 character['species'] // dostajemy sie do klucza species kazdego obiektu character, ten klucz zawiera tablice z urlem do obiektu species 
                     .map(spec =>
+                        
                         species.find(speciesObj => speciesObj['url'] === spec)['name']
                     );
-            const starships = []
+            /* const starships = []
             character["starships"]
                 .map(shipUrl => {
                     starships.push(species.find(speciesObj => speciesObj["starships"].indexOf(shipUrl) !== -1)["name"]);
                     console.log(starships)
-                });
+                }); */
             return Object.assign(
                 character,
                 {
                     species: speciesName,
-                    starships: starships
+                    //starships: starships
                 }
             );
         });
