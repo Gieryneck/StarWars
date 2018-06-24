@@ -12,7 +12,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class FilterComponent implements OnInit {
     @Output() keywordEntered: EventEmitter<string> = new EventEmitter<string>();
 
-
     keywordSubject = new Subject<string>();
     
     constructor() { }
@@ -24,10 +23,7 @@ export class FilterComponent implements OnInit {
         ).subscribe(keyword => this.keywordEntered.emit(keyword))
     }
 
-
     search(term) {
         this.keywordSubject.next(term)
     }
-
-    
 }

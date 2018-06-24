@@ -123,7 +123,7 @@ export class StarwarsCharacterService {
                 character,
                 {
                     species: speciesName,
-                    //starships: starships
+                    starships: starships
                 }
             );
         });
