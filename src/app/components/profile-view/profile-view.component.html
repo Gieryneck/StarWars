@@ -4,13 +4,13 @@
         <p *ngFor="let species of profile.species">{{species.name}}</p>
     </div>
     <ul class="list">
-        <li>{{profile.birth_year}}</li>
-        <li>{{profile.height}}</li>
-        <li>{{profile.mass}}</li>
-        <li>{{profile.hair_color}}</li>
-        <li>{{profile.skin_color}}</li>
-        <li>{{profile.gender}}</li>
-        <li>{{profile.number_of_vehicles}}</li>
+        <li>Born: {{profile.birth_year}}</li>
+        <li>Height: {{profile.height}}</li>
+        <li>Mass: {{profile.mass}}</li>
+        <li>Hair: {{profile.hair_color}}</li>
+        <li>Skin color: {{profile.skin_color}}</li>
+        <li>Gender: {{profile.gender}}</li>
+        <li>Vehicles: {{profile.vehicles.length}}</li>
     </ul>
     <div *ngIf="profile.starships.length">
         <h3>Starships:</h3>

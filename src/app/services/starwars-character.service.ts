@@ -6,7 +6,7 @@ import { Species } from '../interfaces/Species';
 import { map, concatMap, tap } from 'rxjs/operators';
 import { flattenDeep, chain, isEmpty } from 'lodash';
 import {Starship} from '../interfaces/Starship';
-
+import { Data } from '../interfaces/Data';
 
 @Injectable({
     providedIn: 'root'
@@ -14,100 +14,24 @@ import {Starship} from '../interfaces/Starship';
 
 export class StarwarsCharacterService {
 
-    private profileSubject = new Subject<Character>();
-    profileSubject$ = this.profileSubject.asObservable();
-
-
     constructor(
         private http: HttpClient
     ) {
         this.updateCurrentUrl();
     }
 
-    apiCharEndpoint = 'https://swapi.co/api/people/';
+    private profileSubject = new Subject<Character>();
+    public profileSubject$ = this.profileSubject.asObservable();
 
+    private apiCharEndpoint = 'https://swapi.co/api/people/';
     private currentUrl: string;
     private apiNextUrl: string;
     private apiPreviousUrl: string;
+    private keyword = '';
 
-    keyword = '';
-
-    selectProfile(char: Character) {
+    
+    public selectProfile(char: Character) {
         this.profileSubject.next(char);
-    }
-
-    getRequestUrl(keyword: string): string {
-        let url = this.apiCharEndpoint;
-        const params = {};
-
-        if (keyword) {
-            params['search'] = keyword;
-        }
-
-        url += this.generateQueryString(params);
-
-        return url;
-    }
-
-    private generateQueryString(params: {}) {
-        let querystring = '';
-
-        if (!isEmpty(params)) {
-            querystring += '?' + Object.keys(params).map(key => key + '=' + params[key]).join('&');
-        }
-
-        return querystring;
-    }
-
-    setNextUrl(url: string | null) {
-        this.apiNextUrl = url;
-    }
-
-    setPreviousUrl(url: string | null) {
-        this.apiPreviousUrl = url;
-    }
-
-    public getNextPage() {
-        this.currentUrl = this.apiNextUrl;
-        return this.getList();
-    }
-
-    public getPreviousPage() {
-        this.currentUrl = this.apiPreviousUrl;
-        return this.getList();
-    }
-
-    updateCurrentUrl() {
-        this.currentUrl = this.getRequestUrl(this.keyword);
-    }
-
-    //glowna funkcja pobierajaca liste
-
-    public getList(): Observable<Character[]> {
-
-        return this.http.get<any>(this.currentUrl)
-
-            .pipe(
-                tap(response => {
-                    this.setNextUrl(response.next);
-                    this.setPreviousUrl(response.previous);
-                }),
-                map((response): Character[] => response.results),
-                concatMap(
-                    characters => forkJoin(
-                        ...this.getAllNestedUrls(characters)
-                            .map(uniqueUrl => {
-                                return this.getNestedObject(uniqueUrl);
-                            }),
-
-                        ),
-                    // ta fcja bedaca parametrem concatMap to results selector dla outer observable(result to Observable<Characters[]>)
-                    // i inner observable (result to SpeciesObj[])
-                    (characters, speciesAndStarships) => {
-                        return this.addSpeciesAndStarships(characters, speciesAndStarships);
-                    }
-                )
-            );
     }
 
     public setKeyword(keyword: string) {
@@ -123,9 +47,82 @@ export class StarwarsCharacterService {
         return this.apiPreviousUrl !== null;
     }
 
-    // dodaje gatunek
+    public getNextPage() {
+        this.currentUrl = this.apiNextUrl;
+        return this.getList();
+    }
 
-    addSpeciesAndStarships(characters, data) {
+    public getPreviousPage() {
+        this.currentUrl = this.apiPreviousUrl;
+        return this.getList();
+    }
+
+    public getList(): Observable<Character[]> {
+
+        return this.http.get<any>(this.currentUrl)
+            .pipe(
+                tap((response: Data) => {
+                    this.setNextUrl(response.next);
+                    this.setPreviousUrl(response.previous);
+                    console.log(this.currentUrl);
+                }),
+                map((response): Character[] => response.results),
+                concatMap(
+                    characters => forkJoin(
+                        ...this.getAllNestedUrls(characters)
+                            .map(uniqueUrl => {
+                                return this.getNestedObject(uniqueUrl);
+                            }),
+
+                        ),
+                    // ta fcja bedaca parametrem concatMap to results selector dla danych emitowanych
+                    // przez outer observable(characters)
+                    // i inner observable (speciesAndStarships)
+                    (characters: Character[], speciesAndStarships: Array<Species | Starship> ) => {
+                        return this.addSpeciesAndStarships(characters, speciesAndStarships);
+                    }
+                )
+            );
+    }
+
+
+    private getRequestUrl(keyword: string): string {
+        let url = this.apiCharEndpoint;
+        const params = {};
+
+        if (keyword) {
+            params['search'] = keyword;
+        }
+
+        url += this.generateQueryString(params);
+
+        return url;
+    }
+
+    private generateQueryString(params: {}) {
+
+        let querystring = '';
+
+        if (!isEmpty(params)) {
+            querystring += '?' + Object.keys(params).map(key => key + '=' + params[key]).join('&');
+        }
+
+        return querystring;
+    }
+
+    private setNextUrl(url: string | null) {
+        this.apiNextUrl = url;
+    }
+
+    private setPreviousUrl(url: string | null) {
+        this.apiPreviousUrl = url;
+    }
+
+    private updateCurrentUrl() {
+        this.currentUrl = this.getRequestUrl(this.keyword);
+    }
+
+    private addSpeciesAndStarships(characters, data): Character[] {
         return characters.map((character) => ({
             ...character,
             species: character.species
@@ -139,12 +136,12 @@ export class StarwarsCharacterService {
         }));
     }
 
-    // pobiera gatunek z API
-    getNestedObject(url: string): Observable<Species | Starship> {
+    
+    private getNestedObject(url: string): Observable<Species | Starship> {
         return this.http.get<Species | Starship>(url);
     }
 
-    getAllNestedUrls(characters): string[] {
+    private getAllNestedUrls(characters): string[] {
         // chain pozwala na przepuszczenie danych przez kolejne operatory lodasha,
         // tworzy lodashowy wrapper ktory musi byc na koncu zdjety przez value
         return chain(characters)

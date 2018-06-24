@@ -8,7 +8,6 @@ export interface Character {
     skin_color: string;
     gender: string;
     vehicles: Array<string>;
-    number_of_vehicles: number;
     starships: Array<string>;
     url: string;
 }

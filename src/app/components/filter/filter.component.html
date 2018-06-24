@@ -1,4 +1,11 @@
-<div>
-    <h1>Star Wars Characters</h1>
-    <input #searchBox (keyup)="search(searchBox.value)"/>
+<div class="input-group mb-3 filter-component">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Search</span>
+    </div>
+    <input #searchBox (keyup)="search(searchBox.value)"
+        type="text"  
+        class="form-control" 
+        aria-label="Username" 
+        aria-describedby="basic-addon1"
+        >
 </div>

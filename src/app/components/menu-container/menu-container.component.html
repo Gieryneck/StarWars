@@ -1,15 +1,17 @@
+
 <app-filter (keywordEntered)="search($event)"></app-filter>
 <div class="menu">
-    <ul>
+    <ul class="list-group char-list">
         <app-menu-element 
             *ngFor="let char of characters$ | async"
             [character]="char"
+            class="list-group-item list-unstyled"
         >   
         </app-menu-element>
     </ul>
     <div> 
-        <button *ngIf="swService.isPreviousPage()" (click)="getPreviousPage()" type="button" class="btn btn-primary">Previous</button>
-        <button *ngIf="swService.isNextPage()" (click)="getNextPage()">Next</button>
+        <button *ngIf="swService.isPreviousPage()" (click)="getPreviousPage()" class="btn">Previous</button>
+        <button *ngIf="swService.isNextPage()" (click)="getNextPage()" class="btn">Next</button>
     </div>
 </div>
 
